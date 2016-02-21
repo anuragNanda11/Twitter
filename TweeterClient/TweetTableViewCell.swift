@@ -20,7 +20,19 @@ class TweetTableViewCell: UITableViewCell {
     
     @IBOutlet weak var profileImageView: UIImageView!
     
+    var tweetFaved: Bool!
+    var reTweeted: Bool!
+    
     var tweetId: String?
+    
+    @IBOutlet weak var favButton: UIButton!
+    
+    @IBOutlet weak var favCountLabel: UILabel!
+    
+    
+    @IBOutlet weak var retweetCountLabel: UILabel!
+    
+    @IBOutlet weak var retweetButton: UIButton!
     
     var tweet: Tweet! {
         didSet {
@@ -32,6 +44,14 @@ class TweetTableViewCell: UITableViewCell {
             print(imageUrl)
             profileImageView.setImageWithURL(imageUrl!)
             tweetId = tweet.tweetId
+            favCountLabel.text = tweet.favouriteCount.description
+            
+            retweetCountLabel.text = tweet.retweetCount.description
+            
+            tweetFaved = tweet.favorited
+            reTweeted = tweet.retweeted
+            favButton.selected = tweet.favorited
+            retweetButton.selected = tweet.retweeted
 
             
         
@@ -47,6 +67,9 @@ class TweetTableViewCell: UITableViewCell {
         // Initialization code
         
         tweetTextLabel.preferredMaxLayoutWidth = tweetTextLabel.frame.size.width
+        
+        
+        
         
     }
     
@@ -66,12 +89,17 @@ class TweetTableViewCell: UITableViewCell {
     
     @IBAction func onFav(sender: AnyObject) {
         TwitterClient.sharedInstance.favTweet(tweet.tweetId!)
-        
-       
+        tweet.favouriteCount = tweet.favouriteCount + 1
+        favCountLabel.text = tweet.favouriteCount.description
+        favButton.selected = true
     }
     
     @IBAction func onRetweet(sender: AnyObject) {
         TwitterClient.sharedInstance.reTweet(tweet.tweetId!)
+        retweetButton.selected = true
+        tweet.retweetCount  = tweet.retweetCount + 1
+        retweetCountLabel.text = tweet.retweetCount.description
+        
     }
     
     
